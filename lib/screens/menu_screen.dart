@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:std_flutter_animations/screens/implicit_animations_screen.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
+
+  void _goToPage(BuildContext context, Widget screen) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => screen,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -9,9 +19,17 @@ class MenuScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Flutter Animations"),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
-          children: [],
+          children: [
+            ElevatedButton(
+              onPressed: () => _goToPage(
+                context,
+                const ImplicitAnimationsScreen(),
+              ),
+              child: const Text("Implicit Animations"),
+            ),
+          ],
         ),
       ),
     );
