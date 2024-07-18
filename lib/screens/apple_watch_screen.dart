@@ -17,6 +17,22 @@ class _AppleWatchScreenState extends State<AppleWatchScreen> {
         foregroundColor: Colors.white,
         title: const Text("Apple Watch"),
       ),
+      body: Center(
+        child: CustomPaint(
+          painter: AppleWatchPainter(),
+          size: const Size(400, 400),
+        ),
+      ),
     );
+  }
+}
+
+class AppleWatchPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {}
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }
