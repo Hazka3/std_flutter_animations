@@ -11,7 +11,10 @@ class _AppleWatchScreenState extends State<AppleWatchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         title: const Text("Apple Watch"),
       ),
     );
