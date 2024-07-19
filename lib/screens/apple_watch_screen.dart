@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class AppleWatchScreen extends StatefulWidget {
@@ -37,6 +39,7 @@ class AppleWatchPainter extends CustomPainter {
     final blueCircleRadius = (size.width) / 2 * 0.62;
 
     const circleStrokeWidth = 25.0;
+    const startingAngle = -pi / 2;
 
     // draw red circle
     final redCirclePaint = Paint()
@@ -72,6 +75,66 @@ class AppleWatchPainter extends CustomPainter {
       center,
       blueCircleRadius,
       blueCirclePaint,
+    );
+
+    // draw red arc
+    final redArcRect = Rect.fromCircle(
+      center: center,
+      radius: redCircleRadius,
+    );
+
+    final redArcPaint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = circleStrokeWidth;
+
+    canvas.drawArc(
+      redArcRect,
+      startingAngle,
+      pi / 4, // のちにRandom値となるように変更する
+      false,
+      redArcPaint,
+    );
+
+    // draw green arc
+    final greenArcRect = Rect.fromCircle(
+      center: center,
+      radius: greenCircleRadius,
+    );
+
+    final greenArcPaint = Paint()
+      ..color = Colors.green
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = circleStrokeWidth;
+
+    canvas.drawArc(
+      greenArcRect,
+      startingAngle,
+      3 * pi / 4, // のちにRandom値となるように変更する
+      false,
+      greenArcPaint,
+    );
+
+    // draw blue arc
+    final blueArcRect = Rect.fromCircle(
+      center: center,
+      radius: blueCircleRadius,
+    );
+
+    final blueArcPaint = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = circleStrokeWidth;
+
+    canvas.drawArc(
+      blueArcRect,
+      startingAngle,
+      2 * pi / 3, // のちにRandom値となるように変更する
+      false,
+      blueArcPaint,
     );
   }
 
