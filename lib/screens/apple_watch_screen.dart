@@ -10,6 +10,8 @@ class AppleWatchScreen extends StatefulWidget {
 }
 
 class _AppleWatchScreenState extends State<AppleWatchScreen> {
+  void _animateValues() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +26,10 @@ class _AppleWatchScreenState extends State<AppleWatchScreen> {
           painter: AppleWatchPainter(),
           size: const Size(400, 400),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _animateValues,
+        child: const Icon(Icons.refresh),
       ),
     );
   }
