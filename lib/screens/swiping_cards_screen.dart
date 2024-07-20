@@ -11,7 +11,7 @@ class SwipingCardsScreen extends StatefulWidget {
 
 class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     with SingleTickerProviderStateMixin {
-  final int _index = 1;
+  int _index = 1;
 
   late final size = MediaQuery.of(context).size;
 
@@ -37,8 +37,32 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     _position.value += details.delta.dx;
   }
 
-  void _onHorizontalDragEnd(DragEndDetails details) {
+  void _whenComplete() {
     _position.value = 0.0;
+    setState(() {
+      _index = _index == 5 ? 1 : _index + 1;
+    });
+  }
+
+  void _onHorizontalDragEnd(DragEndDetails details) {
+    final bound = size.width - 200;
+    final dropZone = size.width + 100;
+
+    if (_position.value.abs() >= bound) {
+      final factor = _position.value.isNegative ? -1 : 1;
+
+      _position
+          .animateTo(
+            dropZone * factor,
+            curve: Curves.easeOut,
+          )
+          .whenComplete(_whenComplete);
+    } else {
+      _position.animateTo(
+        0,
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override
