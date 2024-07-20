@@ -18,6 +18,11 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     end: 15,
   );
 
+  late final Tween<double> _scale = Tween(
+    begin: 0.8,
+    end: 1.0,
+  );
+
   late final AnimationController _position = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 300),
@@ -51,12 +56,18 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
         builder: (context, child) {
           final angle = _rotation
               .transform((_position.value + size.width / 2) / size.width);
+
+          final scale = _scale.transform(_position.value.abs() / size.width);
+
           return Stack(
             alignment: Alignment.topCenter,
             children: [
-              const Positioned(
+              Positioned(
                 top: 100,
-                child: Card(),
+                child: Transform.scale(
+                  scale: scale,
+                  child: const Card(),
+                ),
               ),
               Positioned(
                 top: 100,
