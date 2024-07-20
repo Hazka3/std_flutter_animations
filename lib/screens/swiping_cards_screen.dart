@@ -11,6 +11,8 @@ class SwipingCardsScreen extends StatefulWidget {
 
 class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     with SingleTickerProviderStateMixin {
+  final int _index = 1;
+
   late final size = MediaQuery.of(context).size;
 
   late final Tween<double> _rotation = Tween(
@@ -66,7 +68,9 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                 top: 100,
                 child: Transform.scale(
                   scale: scale,
-                  child: const Card(),
+                  child: Card(
+                    index: _index == 5 ? 1 : _index + 1,
+                  ),
                 ),
               ),
               Positioned(
@@ -78,7 +82,9 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                     offset: Offset(_position.value, 0),
                     child: Transform.rotate(
                       angle: angle * pi / 180,
-                      child: const Card(),
+                      child: Card(
+                        index: _index,
+                      ),
                     ),
                   ),
                 ),
@@ -92,7 +98,12 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
 }
 
 class Card extends StatelessWidget {
-  const Card({super.key});
+  final int index;
+
+  const Card({
+    super.key,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +117,7 @@ class Card extends StatelessWidget {
         width: size.width * 0.8,
         height: size.height * 0.6,
         child: Image.asset(
-          "assets/covers/1.jpg",
+          "assets/covers/$index.jpg",
           fit: BoxFit.cover,
         ),
       ),
