@@ -7,21 +7,62 @@ class SwipingCardsScreen extends StatefulWidget {
   State<SwipingCardsScreen> createState() => _SwipingCardsScreenState();
 }
 
-class _SwipingCardsScreenState extends State<SwipingCardsScreen> {
+class _SwipingCardsScreenState extends State<SwipingCardsScreen>
+    with SingleTickerProviderStateMixin {
+  late final size = MediaQuery.of(context).size;
+
+  late final AnimationController _position = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 300),
+    lowerBound: -size.width + 100,
+    upperBound: size.width + 100,
+    value: 0.0,
+  );
+
+  void _onHorizontalDragUpdate(DragUpdateDetails details) {
+    _position.value += details.delta.dx;
+  }
+
+  void _onHorizontalDragEnd(DragEndDetails details) {
+    _position.value = 0.0;
+  }
+
+  @override
+  void dispose() {
+    _position.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Swiping Cards'),
       ),
-      body: const Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Positioned(
-            top: 100,
-            child: Card(),
-          ),
-        ],
+      body: AnimatedBuilder(
+        animation: _position,
+        builder: (context, child) {
+          return Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              const Positioned(
+                top: 100,
+                child: Card(),
+              ),
+              Positioned(
+                top: 100,
+                child: GestureDetector(
+                  onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                  onHorizontalDragEnd: _onHorizontalDragEnd,
+                  child: Transform.translate(
+                    offset: Offset(_position.value, 0),
+                    child: const Card(),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
