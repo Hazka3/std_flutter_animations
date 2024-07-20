@@ -67,6 +67,7 @@ lib/generated_plugin_registrant.dart
 
 /.dart_tool
 /.idea
+.DS_Store
 /linux
 /macos
 /web/
