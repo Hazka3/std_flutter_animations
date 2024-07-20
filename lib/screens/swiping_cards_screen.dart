@@ -27,8 +27,8 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
 
   late final AnimationController _position = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 300),
-    lowerBound: -size.width + 100,
+    duration: const Duration(seconds: 2),
+    lowerBound: (size.width + 100) * -1,
     upperBound: size.width + 100,
     value: 0.0,
   );
@@ -91,7 +91,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
               Positioned(
                 top: 100,
                 child: Transform.scale(
-                  scale: scale,
+                  scale: min(scale, 1.0),
                   child: Card(
                     index: _index == 5 ? 1 : _index + 1,
                   ),
