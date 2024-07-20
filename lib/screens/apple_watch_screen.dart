@@ -9,8 +9,61 @@ class AppleWatchScreen extends StatefulWidget {
   State<AppleWatchScreen> createState() => _AppleWatchScreenState();
 }
 
-class _AppleWatchScreenState extends State<AppleWatchScreen> {
-  void _animateValues() {}
+class _AppleWatchScreenState extends State<AppleWatchScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 1),
+  )..forward();
+
+  late final CurvedAnimation _curve = CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.bounceOut,
+  );
+
+  late Animation<double> _redArcProgress = Tween(
+    begin: 0.005,
+    end: Random().nextDouble() * 2.0,
+  ).animate(_curve);
+
+  late Animation<double> _greenArcProgress = Tween(
+    begin: 0.005,
+    end: Random().nextDouble() * 2.0,
+  ).animate(_curve);
+
+  late Animation<double> _blueArcProgress = Tween(
+    begin: 0.005,
+    end: Random().nextDouble() * 2.0,
+  ).animate(_curve);
+
+  void _animateValues() {
+    setState(() {
+      // red Arc
+      _redArcProgress = Tween(
+        begin: _redArcProgress.value,
+        end: Random().nextDouble() * 2.0,
+      ).animate(_curve);
+
+      //green Arc
+      _greenArcProgress = Tween(
+        begin: _greenArcProgress.value,
+        end: Random().nextDouble() * 2.0,
+      ).animate(_curve);
+
+      //blue Arc
+      _blueArcProgress = Tween(
+        begin: _blueArcProgress.value,
+        end: Random().nextDouble() * 2.0,
+      ).animate(_curve);
+    });
+    _animationController.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +75,16 @@ class _AppleWatchScreenState extends State<AppleWatchScreen> {
         title: const Text("Apple Watch"),
       ),
       body: Center(
-        child: CustomPaint(
-          painter: AppleWatchPainter(),
-          size: const Size(400, 400),
+        child: AnimatedBuilder(
+          animation: _curve,
+          builder: (context, child) => CustomPaint(
+            painter: AppleWatchPainter(
+              redProgress: _redArcProgress.value,
+              greenProgress: _greenArcProgress.value,
+              blueProgress: _blueArcProgress.value,
+            ),
+            size: const Size(400, 400),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -36,6 +96,16 @@ class _AppleWatchScreenState extends State<AppleWatchScreen> {
 }
 
 class AppleWatchPainter extends CustomPainter {
+  final double redProgress;
+  final double greenProgress;
+  final double blueProgress;
+
+  AppleWatchPainter({
+    required this.redProgress,
+    required this.greenProgress,
+    required this.blueProgress,
+  });
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
@@ -98,7 +168,7 @@ class AppleWatchPainter extends CustomPainter {
     canvas.drawArc(
       redArcRect,
       startingAngle,
-      pi / 4, // のちにRandom値となるように変更する
+      redProgress * pi, // のちにRandom値となるように変更する
       false,
       redArcPaint,
     );
@@ -118,7 +188,7 @@ class AppleWatchPainter extends CustomPainter {
     canvas.drawArc(
       greenArcRect,
       startingAngle,
-      3 * pi / 4, // のちにRandom値となるように変更する
+      greenProgress * pi, // のちにRandom値となるように変更する
       false,
       greenArcPaint,
     );
@@ -138,14 +208,16 @@ class AppleWatchPainter extends CustomPainter {
     canvas.drawArc(
       blueArcRect,
       startingAngle,
-      2 * pi / 3, // のちにRandom値となるように変更する
+      blueProgress * pi, // のちにRandom値となるように変更する
       false,
       blueArcPaint,
     );
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(covariant AppleWatchPainter oldDelegate) {
+    return (oldDelegate.redProgress != redProgress) ||
+        (oldDelegate.greenProgress != greenProgress) ||
+        (oldDelegate.blueProgress != blueProgress);
   }
 }
