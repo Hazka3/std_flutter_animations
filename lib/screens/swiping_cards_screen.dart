@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class SwipingCardsScreen extends StatefulWidget {
@@ -10,6 +12,11 @@ class SwipingCardsScreen extends StatefulWidget {
 class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     with SingleTickerProviderStateMixin {
   late final size = MediaQuery.of(context).size;
+
+  late final Tween<double> _rotation = Tween(
+    begin: -15,
+    end: 15,
+  );
 
   late final AnimationController _position = AnimationController(
     vsync: this,
@@ -42,6 +49,8 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
       body: AnimatedBuilder(
         animation: _position,
         builder: (context, child) {
+          final angle = _rotation
+              .transform((_position.value + size.width / 2) / size.width);
           return Stack(
             alignment: Alignment.topCenter,
             children: [
@@ -56,7 +65,10 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                   onHorizontalDragEnd: _onHorizontalDragEnd,
                   child: Transform.translate(
                     offset: Offset(_position.value, 0),
-                    child: const Card(),
+                    child: Transform.rotate(
+                      angle: angle * pi / 180,
+                      child: const Card(),
+                    ),
                   ),
                 ),
               ),
