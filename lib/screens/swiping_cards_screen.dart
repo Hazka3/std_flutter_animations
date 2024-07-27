@@ -11,9 +11,17 @@ class SwipingCardsScreen extends StatefulWidget {
 
 class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     with SingleTickerProviderStateMixin {
+  late final size = MediaQuery.of(context).size;
+
   int _index = 1;
 
-  late final size = MediaQuery.of(context).size;
+  late final AnimationController _position = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+    lowerBound: (size.width + 100) * -1,
+    upperBound: size.width + 100,
+    value: 0.0,
+  );
 
   late final Tween<double> _rotation = Tween(
     begin: -15,
@@ -25,38 +33,28 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     end: 1.0,
   );
 
-  late final AnimationController _position = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 2),
-    lowerBound: (size.width + 100) * -1,
-    upperBound: size.width + 100,
-    value: 0.0,
-  );
-
-  void _onHorizontalDragUpdate(DragUpdateDetails details) {
-    _position.value += details.delta.dx;
-  }
-
   void _whenComplete() {
-    _position.value = 0.0;
+    _position.value = 0;
     setState(() {
       _index = _index == 5 ? 1 : _index + 1;
     });
   }
 
+  void _onHorizontalDragUpdate(DragUpdateDetails details) {
+    _position.value += details.delta.dx;
+  }
+
   void _onHorizontalDragEnd(DragEndDetails details) {
-    final bound = size.width - 200;
-    final dropZone = size.width + 100;
+    final bound = size.width - 200; // カードを消すスワイプ位置
+    final dropZone = size.width + 100; // カードが消える位置
+    final factor =
+        _position.value.isNegative ? -1 : 1; // 左右どちらにスワイプしたかで、アニメーション方向を決定する
 
+    // スワイプ距離が bound を超えた時に、非表示アニメーション
     if (_position.value.abs() >= bound) {
-      final factor = _position.value.isNegative ? -1 : 1;
+      _position.animateTo(dropZone * factor).whenComplete(_whenComplete);
 
-      _position
-          .animateTo(
-            dropZone * factor,
-            curve: Curves.easeOut,
-          )
-          .whenComplete(_whenComplete);
+      // スワイプ距離が十分ではなかった場合は、カードの位置を元に戻す
     } else {
       _position.animateTo(
         0,
@@ -81,9 +79,13 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
         animation: _position,
         builder: (context, child) {
           final angle = _rotation
-              .transform((_position.value + size.width / 2) / size.width);
+                  .transform((_position.value / (size.width + 100) + 1) / 2) *
+              pi /
+              180;
 
-          final scale = _scale.transform(_position.value.abs() / size.width);
+          final scale = _scale.transform(
+            _position.value.abs() / (size.width + 100),
+          );
 
           return Stack(
             alignment: Alignment.topCenter,
@@ -91,7 +93,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
               Positioned(
                 top: 100,
                 child: Transform.scale(
-                  scale: min(scale, 1.0),
+                  scale: scale,
                   child: Card(
                     index: _index == 5 ? 1 : _index + 1,
                   ),
@@ -105,14 +107,14 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                   child: Transform.translate(
                     offset: Offset(_position.value, 0),
                     child: Transform.rotate(
-                      angle: angle * pi / 180,
+                      angle: angle,
                       child: Card(
                         index: _index,
                       ),
                     ),
                   ),
                 ),
-              ),
+              )
             ],
           );
         },
