@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SwipingCardsScreen extends StatefulWidget {
   const SwipingCardsScreen({super.key});
@@ -48,9 +47,10 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
       ColorTween(begin: Colors.white, end: Colors.green);
 
   void _whenComplete() {
-    _position.value = 0;
+    _position.value = 0; // カードの位置を元に戻す
     setState(() {
-      _index = _index == 5 ? 1 : _index + 1;
+      _index =
+          _index == 5 ? 1 : _index + 1; // スワイプアニメ終了時に、Card の index をインクリメント
     });
   }
 
@@ -130,15 +130,19 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
           return Stack(
             alignment: Alignment.topCenter,
             children: [
+              // 後ろのカード
               Positioned(
                 top: 50,
                 child: Transform.scale(
                   scale: scale,
                   child: Card(
-                    index: _index == 5 ? 1 : _index + 1,
+                    index:
+                        _index == 5 ? 1 : _index + 1, // 後ろにあるカードは、index + 1 をもつ
                   ),
                 ),
               ),
+
+              // 表のカード
               Positioned(
                 top: 50,
                 child: GestureDetector(
@@ -149,7 +153,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                     child: Transform.rotate(
                       angle: angle,
                       child: Card(
-                        index: _index,
+                        index: _index, // 表にあるカードは、現在の index を持つ
                       ),
                     ),
                   ),
