@@ -14,11 +14,13 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     with SingleTickerProviderStateMixin {
   late final size = MediaQuery.of(context).size;
 
+  late final iconColorBound = size.width - 200;
+
   int _index = 1;
 
   late final AnimationController _position = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 1),
+    duration: const Duration(milliseconds: 600),
     lowerBound: (size.width + 100) * -1,
     upperBound: size.width + 100,
     value: 0.0,
@@ -33,6 +35,17 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     begin: 0.8,
     end: 1.0,
   );
+
+  late final Tween<double> _buttonScale = Tween(
+    begin: 1.0,
+    end: 1.2,
+  );
+
+  late final ColorTween _cancleButtonColor =
+      ColorTween(begin: Colors.white, end: Colors.red);
+
+  late final ColorTween _checkButtonColor =
+      ColorTween(begin: Colors.white, end: Colors.green);
 
   void _whenComplete() {
     _position.value = 0;
@@ -102,6 +115,18 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
             _position.value.abs() / (size.width + 100),
           );
 
+          final buttonScale = _buttonScale.transform(
+            _position.value.abs() / (size.width + 100),
+          );
+
+          final cancleButtonColor = _cancleButtonColor.transform(
+            _position.value * -1 / (size.width + 100),
+          );
+
+          final checkButtonColor = _checkButtonColor.transform(
+            _position.value / (size.width + 100),
+          );
+
           return Stack(
             alignment: Alignment.topCenter,
             children: [
@@ -136,28 +161,33 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                   children: [
                     GestureDetector(
                       onTap: _testBackButton,
-                      child: Container(
-                        height: 80,
-                        width: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 5,
-                          ),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black26,
-                              offset: Offset(1, 5),
-                              blurRadius: 5,
+                      child: Transform.scale(
+                        scale: _position.value.isNegative ? buttonScale : 1.0,
+                        child: Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            color: cancleButtonColor,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 5,
                             ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.close_outlined,
-                          color: Colors.red,
-                          size: 60,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(1, 5),
+                                blurRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.close_outlined,
+                            color: _position.value > -iconColorBound
+                                ? Colors.red
+                                : Colors.white,
+                            size: 60,
+                          ),
                         ),
                       ),
                     ),
@@ -166,28 +196,33 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                     ),
                     GestureDetector(
                       onTap: _testForwardButton,
-                      child: Container(
-                        height: 80,
-                        width: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 5,
-                          ),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black26,
-                              offset: Offset(1, 5),
-                              blurRadius: 5,
+                      child: Transform.scale(
+                        scale: _position.value.isNegative ? 1.0 : buttonScale,
+                        child: Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            color: checkButtonColor,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 5,
                             ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.done_rounded,
-                          color: Colors.green,
-                          size: 60,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(1, 5),
+                                blurRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.done_rounded,
+                            color: _position.value < iconColorBound
+                                ? Colors.green
+                                : Colors.white,
+                            size: 60,
+                          ),
                         ),
                       ),
                     ),
