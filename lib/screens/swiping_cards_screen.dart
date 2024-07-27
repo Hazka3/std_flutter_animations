@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class SwipingCardsScreen extends StatefulWidget {
   const SwipingCardsScreen({super.key});
@@ -17,7 +18,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
 
   late final AnimationController _position = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 2),
+    duration: const Duration(seconds: 1),
     lowerBound: (size.width + 100) * -1,
     upperBound: size.width + 100,
     value: 0.0,
@@ -63,6 +64,20 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     }
   }
 
+  void _testBackButton() {
+    if (_position.isAnimating) {
+      return;
+    }
+    _position.reverse().whenComplete(_whenComplete);
+  }
+
+  void _testForwardButton() {
+    if (_position.isAnimating) {
+      return;
+    }
+    _position.forward().whenComplete(_whenComplete);
+  }
+
   @override
   void dispose() {
     _position.dispose();
@@ -91,7 +106,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
             alignment: Alignment.topCenter,
             children: [
               Positioned(
-                top: 100,
+                top: 50,
                 child: Transform.scale(
                   scale: scale,
                   child: Card(
@@ -100,7 +115,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                 ),
               ),
               Positioned(
-                top: 100,
+                top: 50,
                 child: GestureDetector(
                   onHorizontalDragUpdate: _onHorizontalDragUpdate,
                   onHorizontalDragEnd: _onHorizontalDragEnd,
@@ -114,7 +129,71 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                     ),
                   ),
                 ),
-              )
+              ),
+              Positioned(
+                bottom: 70,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: _testBackButton,
+                      child: Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 5,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              offset: Offset(1, 5),
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.close_outlined,
+                          color: Colors.red,
+                          size: 60,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 80,
+                    ),
+                    GestureDetector(
+                      onTap: _testForwardButton,
+                      child: Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 5,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              offset: Offset(1, 5),
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.done_rounded,
+                          color: Colors.green,
+                          size: 60,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           );
         },
