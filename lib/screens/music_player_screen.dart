@@ -33,6 +33,29 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 500),
+            child: Container(
+              key: ValueKey(_currentPage),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    "assets/covers/${_currentPage + 1}.jpg",
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 10,
+              sigmaY: 10,
+            ),
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+            ),
+          ),
           PageView.builder(
             onPageChanged: _onPageChanged,
             controller: _pageController,
