@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class MusicPlayerDetailScreen extends StatefulWidget {
-  const MusicPlayerDetailScreen({super.key});
+  final int imageIndex;
+
+  const MusicPlayerDetailScreen({
+    super.key,
+    required this.imageIndex,
+  });
 
   @override
   State<MusicPlayerDetailScreen> createState() =>
@@ -11,6 +16,42 @@ class MusicPlayerDetailScreen extends StatefulWidget {
 class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Intersteller'),
+      ),
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 30,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Hero(
+              tag: "${widget.imageIndex}",
+              child: Container(
+                height: 350,
+                width: 350,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                  image: DecorationImage(
+                    image: AssetImage("assets/covers/${widget.imageIndex}.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
