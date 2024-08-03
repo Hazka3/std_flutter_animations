@@ -64,6 +64,8 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     _volume.value = _volume.value.clamp(0.0, size.width - 80);
   }
 
+  void _toggleMenu() {}
+
   @override
   void dispose() {
     _progressController.dispose();
@@ -77,6 +79,14 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Intersteller'),
+        actions: [
+          IconButton(
+            onPressed: _toggleMenu,
+            icon: const Icon(
+              Icons.menu,
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
