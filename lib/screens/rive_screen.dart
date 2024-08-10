@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class RiveScreen extends StatefulWidget {
   const RiveScreen({super.key});
@@ -10,9 +11,23 @@ class RiveScreen extends StatefulWidget {
 class _RiveScreenState extends State<RiveScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Rive"),
+    return const Scaffold(
+      body: Stack(
+        children: [
+          RiveAnimation.asset(
+            "assets/animations/custom-button-animation.riv",
+            stateMachines: ["state"],
+          ),
+          Center(
+            child: Text(
+              'Login',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
