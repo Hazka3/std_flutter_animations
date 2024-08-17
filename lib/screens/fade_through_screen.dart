@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 
 class FadeThroughScreen extends StatefulWidget {
@@ -22,11 +23,31 @@ class _FadeThroughScreenState extends State<FadeThroughScreen> {
       appBar: AppBar(
         title: const Text("Fade Through"),
       ),
-      body: const [
-        NavigationPage(text: "Profile", icon: Icons.person),
-        NavigationPage(text: "Notifications", icon: Icons.notifications),
-        NavigationPage(text: "Settings", icon: Icons.settings),
-      ][_index],
+      body: PageTransitionSwitcher(
+        transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+            FadeThroughTransition(
+          animation: primaryAnimation,
+          secondaryAnimation: secondaryAnimation,
+          child: child,
+        ),
+        child: const [
+          NavigationPage(
+            key: ValueKey(0),
+            text: "Profile",
+            icon: Icons.person,
+          ),
+          NavigationPage(
+            key: ValueKey(1),
+            text: "Notifications",
+            icon: Icons.notifications,
+          ),
+          NavigationPage(
+            key: ValueKey(2),
+            text: "Settings",
+            icon: Icons.settings,
+          ),
+        ][_index],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: _onNewDestination,
