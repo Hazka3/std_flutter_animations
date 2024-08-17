@@ -25,15 +25,24 @@ class _SharedAxisScreenState extends State<SharedAxisScreen> {
       ),
       body: Column(
         children: [
-          Container(
-            // musicplayer でやったのと同じ感じで、別のwidgetと思わせたいためKeyを付与
-            // じゃないと、同一childと判定されてしまい、アニメーションが再生されない、
-            key: ValueKey(_currentImage),
-            clipBehavior: Clip.hardEdge,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
+          PageTransitionSwitcher(
+            transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+                SharedAxisTransition(
+              animation: primaryAnimation,
+              secondaryAnimation: secondaryAnimation,
+              transitionType: SharedAxisTransitionType.horizontal,
+              child: child,
             ),
-            child: Image.asset("assets/covers/$_currentImage.jpg"),
+            child: Container(
+              // musicplayer でやったのと同じ感じで、別のwidgetと思わせたいためKeyを付与
+              // じゃないと、同一childと判定されてしまい、アニメーションが再生されない、
+              key: ValueKey(_currentImage),
+              clipBehavior: Clip.hardEdge,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: Image.asset("assets/covers/$_currentImage.jpg"),
+            ),
           ),
           const SizedBox(
             height: 50,
