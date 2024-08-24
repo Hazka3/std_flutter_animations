@@ -8,6 +8,12 @@ class WalletScreen extends StatefulWidget {
   State<WalletScreen> createState() => _WalletScreenState();
 }
 
+final List<Color> colors = [
+  Colors.purple,
+  Colors.black,
+  Colors.blue,
+];
+
 class _WalletScreenState extends State<WalletScreen> {
   bool _isExpanded = false;
 
@@ -36,36 +42,24 @@ class _WalletScreenState extends State<WalletScreen> {
           onVerticalDragEnd: (_) => _onShrink(),
           child: Column(
             children: [
-              const CreditCard(bgColor: Colors.purple)
-                  .animate(
-                    delay: 1.5.seconds,
-                    target: _isExpanded ? 0 : 1,
+              for (var index in [0, 1, 2])
+                Hero(
+                  tag: "$index",
+                  child: CreditCard(
+                    index: index,
+                    isExpanded: _isExpanded,
                   )
-                  .flipV(
-                    end: 0.1,
-                  ),
-              const CreditCard(bgColor: Colors.black)
-                  .animate(
-                    delay: 1.5.seconds,
-                    target: _isExpanded ? 0 : 1,
-                  )
-                  .flipV(
-                    end: 0.1,
-                  )
-                  .slideY(
-                    end: -0.8,
-                  ),
-              const CreditCard(bgColor: Colors.blue)
-                  .animate(
-                    delay: 1.5.seconds,
-                    target: _isExpanded ? 0 : 1,
-                  )
-                  .flipV(
-                    end: 0.1,
-                  )
-                  .slideY(
-                    end: -0.8 * 2,
-                  ),
+                      .animate(
+                        delay: 1.5.seconds,
+                        target: _isExpanded ? 0 : 1,
+                      )
+                      .flipV(
+                        end: 0.1,
+                      )
+                      .slideY(
+                        end: -0.8 * index,
+                      ),
+                ),
             ]
                 .animate(interval: 500.milliseconds)
                 .fadeIn(
@@ -82,84 +76,144 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 }
 
-class CreditCard extends StatelessWidget {
-  final Color bgColor;
+class CreditCard extends StatefulWidget {
+  final int index;
+  final bool isExpanded;
 
   const CreditCard({
     super.key,
-    required this.bgColor,
+    required this.index,
+    required this.isExpanded,
+  });
+
+  @override
+  State<CreditCard> createState() => _CreditCardState();
+}
+
+class _CreditCardState extends State<CreditCard> {
+  void _onTap() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => CardDetailScreen(
+          index: widget.index,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: AbsorbPointer(
+        absorbing: !widget.isExpanded,
+        child: GestureDetector(
+          onTap: _onTap,
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(
+              bottom: 20,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: colors[widget.index],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+                vertical: 40,
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 100,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Test Card",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                          Text(
+                            "**** **** **** **75",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned(
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 20,
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.amber,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CardDetailScreen extends StatelessWidget {
+  final int index;
+
+  const CardDetailScreen({
+    super.key,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(
-        bottom: 20,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Transactions"),
       ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: bgColor,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 30,
-          vertical: 40,
-        ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            const SizedBox(
-              height: 100,
+            Hero(
+              tag: "$index",
+              child: CreditCard(
+                index: index,
+                isExpanded: false,
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Test Card",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                    Text(
-                      "**** **** **** **75",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned(
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      right: 20,
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.amber,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            )
           ],
         ),
       ),
