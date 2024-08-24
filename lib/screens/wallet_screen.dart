@@ -199,6 +199,15 @@ class CardDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> pay = [
+      {"pay": "432,543", "shop": "shop1"},
+      {"pay": "1,212", "shop": "shop2"},
+      {"pay": "62,432", "shop": "shop3"},
+      {"pay": "93.215", "shop": "shop4"},
+      {"pay": "342,120", "shop": "shop5"},
+      {"pay": "1,250,291", "shop": "shop6"},
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Transactions"),
@@ -214,6 +223,58 @@ class CardDetailScreen extends StatelessWidget {
                 isExpanded: false,
               ),
             ),
+            ...[
+              for (var i in pay)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: ListTile(
+                    tileColor: Colors.grey.shade100,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    leading: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                      child: const Icon(
+                        Icons.shopping_bag,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text(
+                      i["shop"],
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "Tokyo Branch",
+                      style: TextStyle(color: Colors.grey.shade800),
+                    ),
+                    trailing: Text(
+                      i["pay"],
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+            ]
+                .animate(
+                  interval: 500.ms,
+                )
+                .fadeIn(
+                  begin: 0,
+                )
+                .flipV(
+                  begin: -1,
+                  end: 0,
+                  curve: Curves.bounceOut,
+                ),
           ],
         ),
       ),
